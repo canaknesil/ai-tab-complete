@@ -1,0 +1,20 @@
+_suggest_cmd() {
+    local cmd
+    local source_dir
+    
+    source_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+    cmd=$(${source_dir}/../backend/suggest.py "$READLINE_LINE") || return
+    _SUGGEST_PROMPT=$READLINE_LINE
+    READLINE_LINE=$cmd
+    READLINE_POINT=${#READLINE_LINE}
+}
+
+_suggest_restore() {
+    [[ -n $_SUGGEST_PROMPT ]] || return
+    READLINE_LINE=$_SUGGEST_PROMPT
+    READLINE_POINT=${#READLINE_LINE}
+    _SUGGEST_PROMPT=
+}
+
+bind -x '"\C-x\C-i": _suggest_cmd'
+bind -x '"\C-xr": _suggest_restore'
