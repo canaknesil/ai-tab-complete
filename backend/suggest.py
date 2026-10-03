@@ -3,6 +3,7 @@
 import json, urllib.request
 import sys
 import subprocess
+import os
 
 def query(prompt, host, port, model):
     body = json.dumps({
@@ -37,10 +38,8 @@ def suggest(prompt, host, port, model):
     #print(ret)
     
     lines = ret.splitlines()
-    if len(lines) < 3:
-        raise Exception("Model response format is wrong: Number of lines less 3.")
-    elif len(lines) > 7:
-        raise Exception("Model response format is wrong: Number of lines greater than 7.")
+    if len(lines) != 3:
+        raise Exception("Model response format is wrong: Number of lines isn't 3.")
     elif lines[0].strip() != "```bash":
         raise Exception("Model response format is wrong: First line isn't '```bash'.")
     elif lines[-1].strip() != "```":
@@ -48,9 +47,9 @@ def suggest(prompt, host, port, model):
     
     return lines[1].strip()
 
-host = "127.0.0.1"
-port = 11435
-model = "qwen2.5-coder:3b"
+host = os.environ.get("AI_TAB_COMPLETE_OLLAMA_IP") or "127.0.0.1"
+port = int(os.environ.get("AI_TAB_COMPLETE_OLLAMA_PORT") or "11434")
+model = os.environ.get("AI_TAB_COMPLETE_OLLAMA_MODEL") or "qwen2.5-coder:3b"
 
 prompt = ' '.join(sys.argv[1:])
 #print(prompt)

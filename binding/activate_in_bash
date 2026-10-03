@@ -1,9 +1,9 @@
+_suggest_source_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+
 _suggest_cmd() {
     local cmd
-    local source_dir
     
-    source_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-    cmd=$(${source_dir}/../backend/suggest.py "$READLINE_LINE") || return
+    cmd=$(${_suggest_source_dir}/../backend/suggest.py "$READLINE_LINE") || return
     _SUGGEST_PROMPT=$READLINE_LINE
     READLINE_LINE=$cmd
     READLINE_POINT=${#READLINE_LINE}
